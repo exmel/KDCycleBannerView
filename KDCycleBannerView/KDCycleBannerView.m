@@ -79,7 +79,7 @@ static void *kContentImageViewObservationContext = &kContentImageViewObservation
 }
 
 - (void)initializeScrollView {
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame))];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(self.insets.left, self.insets.top, CGRectGetWidth(self.frame) - self.insets.left - self.insets.right, CGRectGetHeight(self.frame) - self.insets.top - self.insets.bottom)];
     _scrollView.delegate = self;
     _scrollView.pagingEnabled = YES;
     _scrollView.showsHorizontalScrollIndicator = NO;
@@ -92,8 +92,10 @@ static void *kContentImageViewObservationContext = &kContentImageViewObservation
 - (void)initializePageControl {
     CGRect pageControlFrame = CGRectMake(0, 0, CGRectGetWidth(_scrollView.frame), 30);
     _pageControl = [[UIPageControl alloc] initWithFrame:pageControlFrame];
-    _pageControl.center = CGPointMake(CGRectGetWidth(_scrollView.frame)*0.5, CGRectGetHeight(_scrollView.frame) - 12.);
+    _pageControl.center = CGPointMake(CGRectGetWidth(self.frame)*0.5, CGRectGetHeight(self.frame) - CGRectGetHeight(pageControlFrame)*0.5 - self.pageControlBottomMargin);
     _pageControl.userInteractionEnabled = NO;
+    _pageControl.currentPageIndicatorTintColor = self.tintColor;
+    _pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:.75 alpha:1.];
     [self addSubview:_pageControl];
 }
 
