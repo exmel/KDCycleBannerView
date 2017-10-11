@@ -103,7 +103,14 @@ static void *kContentImageViewObservationContext = &kContentImageViewObservation
     NSAssert(_datasource != nil, @"datasource must not nil");
     _datasourceImages = [_datasource numberOfKDCycleBannerView:self];
     
+    // single tap gesture recognizer
+    UITapGestureRecognizer *tapGestureRecognize = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureRecognizer:)];
+    tapGestureRecognize.delegate = self;
+    tapGestureRecognize.numberOfTapsRequired = 1;
+    [_scrollView addGestureRecognizer:tapGestureRecognize];
+    
     if (_datasourceImages.count == 0) {
+        _currentSelectedPage = NSNotFound;
         //显示默认页，无数据页面
         if ([self.datasource respondsToSelector:@selector(placeHolderImageOfZeroBannerView)]) {
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_scrollView.frame), CGRectGetHeight(_scrollView.frame))];
@@ -164,13 +171,6 @@ static void *kContentImageViewObservationContext = &kContentImageViewObservation
     if (self.isContinuous && _datasourceImages.count > 1) {
         _scrollView.contentOffset = CGPointMake(CGRectGetWidth(_scrollView.frame), 0);
     }
-    
-    // single tap gesture recognizer
-    UITapGestureRecognizer *tapGestureRecognize = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureRecognizer:)];
-    tapGestureRecognize.delegate = self;
-    tapGestureRecognize.numberOfTapsRequired = 1;
-    [_scrollView addGestureRecognizer:tapGestureRecognize];
-    
 }
 
 - (void)reloadDataWithCompleteBlock:(CompleteBlock)competeBlock {
@@ -291,6 +291,12 @@ static void *kContentImageViewObservationContext = &kContentImageViewObservation
 #pragma mark - UITapGestureRecognizerSelector
 
 - (void)singleTapGestureRecognizer:(UITapGestureRecognizer *)tapGesture {
+    
+    if (_currentSelectedPage == NSNotFound
+        && [self.delegate respondsToSelector:@selector(cycleBannerViewDidSelectedPlaceHolderImageOfZeroBannerView:)]) {
+        [self.delegate cycleBannerViewDidSelectedPlaceHolderImageOfZeroBannerView:self];
+        return;
+    }
     
     NSInteger page = (NSInteger)(_scrollView.contentOffset.x / CGRectGetWidth(_scrollView.frame));
     

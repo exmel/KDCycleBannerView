@@ -29,6 +29,7 @@ typedef void(^CompleteBlock)(void);
 @optional
 - (void)cycleBannerView:(KDCycleBannerView *)bannerView didScrollToIndex:(NSUInteger)index;
 - (void)cycleBannerView:(KDCycleBannerView *)bannerView didSelectedAtIndex:(NSUInteger)index;
+- (void)cycleBannerViewDidSelectedPlaceHolderImageOfZeroBannerView:(KDCycleBannerView *)bannerView;
 
 @end
 
